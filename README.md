@@ -13,14 +13,29 @@ The EventMonitoringTopology is designed to process incoming events, persist them
 3. **CountUsersAndIpsBolt**: Counts distinct users per IP and distinct IPs per user.
 4. **AlertBolt**: Generates alerts based on combined threshold.
 
+## Setup
+1. Download Redis if not exists: `brew install redis`
+2. Start Redis server `redis-server`
+3. Before each run for testing purposes, clean the DB `redis-cli FLUSHDB`
+
 ## Topology Flow
 
-```mermaid
-graph LR
-    A[EventSpout] --> B[EventPersistenceBolt]
-    B --> C[CountUsersAndIpsBolt]
-    C --> D[AlertBolt]
+```
+[ event_spout ]
+       |
+       v
+[ ip_to_user_persistence_bolt ]
+       |
+       v
+[ user_to_ip_persistence_bolt ]
+       |
+       v
+[ count_users_and_ips_bolt ]
+       |
+       v
+[ alert_bolt ]
+
 ```
 
 ## Note
-This topology is designed for demonstration purposes using a LocalCluster and H2 in-memory database. For production deployment, configure the topology for a distributed Storm cluster and .
+This topology is designed for demonstration purposes using a LocalCluster and local Redis database. For production deployment, configure the topology for a distributed Storm cluster and Redis server.
