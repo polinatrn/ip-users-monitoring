@@ -55,3 +55,7 @@ The EventMonitoringTopology is designed to process incoming events, persist them
 
 ## Note
 This topology is designed for demonstration purposes using a LocalCluster and a local Redis database. For production deployment, configure the topology for a distributed Storm cluster and Redis server.
+
+## Out of Scope
+* Because the EventSpout gets its input from a local file and not from a stream (was out of scope), I didn't set parallelism for the spout execution in order not to read the file several times.
+* Testing was out of scope
