@@ -12,7 +12,7 @@ import redis.clients.jedis.Jedis;
 
 import java.util.Map;
 
-import static org.example.SqlQueries.*;
+import static org.example.FieldNames.*;
 
 public class CountUsersAndIpsBolt extends BaseRichBolt {
     private Jedis jedis;

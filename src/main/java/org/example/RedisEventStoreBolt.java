@@ -8,8 +8,8 @@ import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 
-import static org.example.SqlQueries.IP;
-import static org.example.SqlQueries.USER_ID;
+import static org.example.FieldNames.IP;
+import static org.example.FieldNames.USER_ID;
 
 
 public class RedisEventStoreBolt extends RedisStoreBolt {

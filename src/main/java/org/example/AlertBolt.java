@@ -13,7 +13,7 @@ import redis.clients.jedis.Jedis;
 
 import java.util.Map;
 
-import static org.example.SqlQueries.*;
+import static org.example.FieldNames.*;
 
 public class AlertBolt extends BaseRichBolt {
     private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(AlertBolt.class);

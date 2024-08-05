@@ -17,8 +17,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Map;
 
-import static org.example.SqlQueries.IP;
-import static org.example.SqlQueries.USER_ID;
+import static org.example.FieldNames.IP;
+import static org.example.FieldNames.USER_ID;
 
 public class EventSpout extends BaseRichSpout {
     private SpoutOutputCollector collector;

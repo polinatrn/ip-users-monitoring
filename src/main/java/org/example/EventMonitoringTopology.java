@@ -3,13 +3,12 @@ package org.example;
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
 import org.apache.storm.generated.StormTopology;
-import org.apache.storm.jdbc.common.ConnectionProvider;
 import org.apache.storm.redis.bolt.RedisStoreBolt;
 import org.apache.storm.redis.common.config.JedisPoolConfig;
 import org.apache.storm.topology.TopologyBuilder;
 
-import static org.example.SqlQueries.IP;
-import static org.example.SqlQueries.USER_ID;
+import static org.example.FieldNames.IP;
+import static org.example.FieldNames.USER_ID;
 
 
 public class EventMonitoringTopology {
@@ -20,7 +19,6 @@ public class EventMonitoringTopology {
     private static final String COUNT_USERS_AND_IPS_BOLT = "count-users-and-ips-bolt";
     private static final String ALERT_BOLT = "alert-bolt";
     private static final int COMBINED_THRESHOLD = 5;
-    private static ConnectionProvider connectionProvider;
 
 
     public static void main(String[] args) throws Exception {
