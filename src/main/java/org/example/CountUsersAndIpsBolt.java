@@ -33,8 +33,7 @@ public class CountUsersAndIpsBolt extends BaseRichBolt {
     public void execute(Tuple input) {
         String ip = input.getStringByField(IP);
         String userId = input.getStringByField(USER_ID);
-        String eventId = input.getStringByField(EVENT_ID);
-        if(jedis.exists(eventId)) {
+        if(isBothUpstreamBoltsFinished(input)) {
             jedis.sadd("IP:" + ip, userId);
             jedis.sadd("User:" + userId, ip);
 
@@ -42,10 +41,14 @@ public class CountUsersAndIpsBolt extends BaseRichBolt {
             Long ipCount = jedis.scard("User:" + userId);
 
             this.collector.emit(new Values(userId, ip, userCount, ipCount));
-        } else {
-            jedis.set(eventId, "");
         }
         this.collector.ack(input);
+    }
+
+    private boolean isBothUpstreamBoltsFinished(Tuple input) {
+        String eventId = input.getStringByField(EVENT_ID);
+        String inputBolt = input.getSourceComponent();
+        return jedis.scard(eventId) == 2 || (jedis.scard(eventId) == 1 && !jedis.srandmember(eventId).equals(inputBolt));
     }
 
     @Override
