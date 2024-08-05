@@ -8,10 +8,11 @@ The EventMonitoringTopology is designed to process incoming events, persist them
 
 ## Components
 
-1. **EventSpout**: Generates events.
-2. **EventPersistenceBolt**: Persists events to a database.
-3. **CountUsersAndIpsBolt**: Counts distinct users per IP and distinct IPs per user.
-4. **AlertBolt**: Generates alerts based on combined threshold.
+1. **event_spout**: Generates events from local file.
+2. **ip_to_user_persistence_bolt**: Adds events to a redis set of ip as a key.
+3. **user_to_ip_persistence_bolt**: Adds events to a redis set of user as a key.
+4. **count_users_and_ips_bolt**: Fetches set sizes of ip and user sets and emits them.
+5**AlertBolt**: Generates alerts based on combined threshold. Deduplicates identical alerts.
 
 ## Setup
 1. Download Redis if not exists: `brew install redis`
@@ -38,4 +39,4 @@ The EventMonitoringTopology is designed to process incoming events, persist them
 ```
 
 ## Note
-This topology is designed for demonstration purposes using a LocalCluster and local Redis database. For production deployment, configure the topology for a distributed Storm cluster and Redis server.
+This topology is designed for demonstration purposes using a LocalCluster and a local Redis database. For production deployment, configure the topology for a distributed Storm cluster and Redis server.

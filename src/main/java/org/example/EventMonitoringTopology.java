@@ -24,9 +24,11 @@ public class EventMonitoringTopology {
 
 
     public static void main(String[] args) throws Exception {
-        JedisPoolConfig poolConfig = new JedisPoolConfig.Builder().setHost("localhost").setPort(6379).build();
+        JedisPoolConfig poolConfig = new JedisPoolConfig.Builder()
+                .setHost("localhost")
+                .setPort(6379).build();
         LocalCluster cluster = new LocalCluster();
-        cluster.submitTopology("event-monitoring-topology", new Config(), getTopology(poolConfig)); //todo new config?
+        cluster.submitTopology("event-monitoring-topology", new Config(), getTopology(poolConfig));
     }
 
 
@@ -41,7 +43,7 @@ public class EventMonitoringTopology {
         builder.setBolt(IP_TO_USER_PERSISTENCE_BOLT, ipToUserPersistenceBolt, 2).shuffleGrouping(EVENT_SPOUT);
         builder.setBolt(USER_TO_IP_PERSISTENCE_BOLT, userToIpPersistenceBolt, 2).shuffleGrouping(IP_TO_USER_PERSISTENCE_BOLT);
         builder.setBolt(COUNT_USERS_AND_IPS_BOLT, new CountUsersAndIpsBolt(poolConfig), 2).shuffleGrouping(USER_TO_IP_PERSISTENCE_BOLT);
-        builder.setBolt(ALERT_BOLT, new AlertBolt(COMBINED_THRESHOLD), 2).shuffleGrouping(COUNT_USERS_AND_IPS_BOLT);
+        builder.setBolt(ALERT_BOLT, new AlertBolt(COMBINED_THRESHOLD, poolConfig), 2).shuffleGrouping(COUNT_USERS_AND_IPS_BOLT);
         return builder.createTopology();
     }
 }
