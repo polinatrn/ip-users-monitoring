@@ -33,14 +33,19 @@ public class CountUsersAndIpsBolt extends BaseRichBolt {
     public void execute(Tuple input) {
         String ip = input.getStringByField(IP);
         String userId = input.getStringByField(USER_ID);
+        String eventId = input.getStringByField(EVENT_ID);
+        if(jedis.exists(eventId)) {
+            jedis.sadd("IP:" + ip, userId);
+            jedis.sadd("User:" + userId, ip);
 
-        jedis.sadd("IP:" + ip, userId);
-        jedis.sadd("User:" + userId, ip);
+            Long userCount = jedis.scard("IP:" + ip);
+            Long ipCount = jedis.scard("User:" + userId);
 
-        Long userCount = jedis.scard("IP:" + ip);
-        Long ipCount = jedis.scard("User:" + userId);
-
-        this.collector.emit(new Values(userId, ip, userCount, ipCount));
+            this.collector.emit(new Values(userId, ip, userCount, ipCount));
+        } else {
+            jedis.set(eventId, "");
+        }
+        this.collector.ack(input);
     }
 
     @Override

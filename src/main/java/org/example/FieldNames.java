@@ -5,4 +5,5 @@ public class FieldNames {
     static final String IP = "ip";
     static final String USER_COUNT = "user_count";
     static final String IP_COUNT = "ip_count";
+    static final String EVENT_ID = "event_id";
 }

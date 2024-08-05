@@ -16,9 +16,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Map;
+import java.util.UUID;
 
-import static org.example.FieldNames.IP;
-import static org.example.FieldNames.USER_ID;
+import static org.example.FieldNames.*;
 
 public class EventSpout extends BaseRichSpout {
     private SpoutOutputCollector collector;
@@ -60,7 +60,8 @@ public class EventSpout extends BaseRichSpout {
 
                 String userId = jsonNode.path(USER_ID).asText();
                 String ip = jsonNode.path(IP).asText();
-                collector.emit(new Values(userId, ip));
+                String eventId = UUID.randomUUID().toString();
+                collector.emit(new Values(eventId, userId, ip));
             }
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
@@ -74,7 +75,7 @@ public class EventSpout extends BaseRichSpout {
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
-        declarer.declare(new Fields(USER_ID, IP));
+        declarer.declare(new Fields(EVENT_ID,USER_ID, IP));
 
     }
 }

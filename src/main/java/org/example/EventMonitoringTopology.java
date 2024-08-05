@@ -13,8 +13,8 @@ import static org.example.FieldNames.USER_ID;
 
 public class EventMonitoringTopology {
 
-    private static final String USER_TO_IP_PERSISTENCE_BOLT = "user_to_ip_persistence_bolt";
-    private static final String IP_TO_USER_PERSISTENCE_BOLT = "ip_to_user_persistence_bolt";
+    static final String USER_TO_IP_PERSISTENCE_BOLT = "user_to_ip_persistence_bolt";
+    static final String IP_TO_USER_PERSISTENCE_BOLT = "ip_to_user_persistence_bolt";
     private static final String EVENT_SPOUT = "event_spout";
     private static final String COUNT_USERS_AND_IPS_BOLT = "count-users-and-ips-bolt";
     private static final String ALERT_BOLT = "alert-bolt";
@@ -39,8 +39,10 @@ public class EventMonitoringTopology {
 
         builder.setSpout(EVENT_SPOUT, new EventSpout(), 1);
         builder.setBolt(IP_TO_USER_PERSISTENCE_BOLT, ipToUserPersistenceBolt, 2).shuffleGrouping(EVENT_SPOUT);
-        builder.setBolt(USER_TO_IP_PERSISTENCE_BOLT, userToIpPersistenceBolt, 2).shuffleGrouping(IP_TO_USER_PERSISTENCE_BOLT);
-        builder.setBolt(COUNT_USERS_AND_IPS_BOLT, new CountUsersAndIpsBolt(poolConfig), 2).shuffleGrouping(USER_TO_IP_PERSISTENCE_BOLT);
+        builder.setBolt(USER_TO_IP_PERSISTENCE_BOLT, userToIpPersistenceBolt, 2).shuffleGrouping(EVENT_SPOUT);
+        builder.setBolt(COUNT_USERS_AND_IPS_BOLT, new CountUsersAndIpsBolt(poolConfig), 2)
+                .shuffleGrouping(USER_TO_IP_PERSISTENCE_BOLT)
+                .shuffleGrouping(IP_TO_USER_PERSISTENCE_BOLT);
         builder.setBolt(ALERT_BOLT, new AlertBolt(COMBINED_THRESHOLD, poolConfig), 2).shuffleGrouping(COUNT_USERS_AND_IPS_BOLT);
         return builder.createTopology();
     }

@@ -22,19 +22,34 @@ The EventMonitoringTopology is designed to process incoming events, persist them
 ## Topology Flow
 
 ```
-[ event_spout ]
-       |
-       v
-[ ip_to_user_persistence_bolt ]
-       |
-       v
-[ user_to_ip_persistence_bolt ]
-       |
-       v
-[ count_users_and_ips_bolt ]
-       |
-       v
-[ alert_bolt ]
+                   +-------------+
+                   |  EventSpout |
+                   +-------------+
+                          |
+                          | (shuffle grouping)
+                          |
+            +-------------+-------------+
+            |                           |
+ +---------------------+   +---------------------+
+ | IpToUserPersistence |   | UserToIpPersistence |
+ |        Bolt         |   |        Bolt         |
+ +---------------------+   +---------------------+
+            |                           |
+            |                           |
+            | (shuffle grouping)        | (shuffle grouping)
+            |                           |
+            +-------------+-------------+
+                          |
+                          v
+            +-----------------------------+
+            |     CountUsersAndIpsBolt    |
+            +-----------------------------+
+                          |
+                          | (shuffle grouping)
+                          v
+                   +-------------+
+                   |  AlertBolt  |
+                   +-------------+
 
 ```
 
