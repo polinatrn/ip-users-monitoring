@@ -40,7 +40,7 @@ public class CountUsersAndIpsBolt extends BaseRichBolt {
             Long userCount = jedis.scard("IP:" + ip);
             Long ipCount = jedis.scard("User:" + userId);
 
-            this.collector.emit(new Values(userId, ip, userCount, ipCount));
+            this.collector.emit(input, new Values(userId, ip, userCount, ipCount));
         }
         this.collector.ack(input);
     }
